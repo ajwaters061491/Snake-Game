@@ -1,6 +1,6 @@
 const cvs = document.getElementById("snake"); //snake?
 const ctx = cvs.getContext("2d");
-let box = 32; //unit for box size
+const box = 32; //unit for box size
 
 //images
 let imgFood = new Image();
@@ -9,7 +9,7 @@ imgFood.src = "images/food.png";
 let imgGround = new Image();
 imgGround.src = "images/ground.png";
 
-//audio  //audioName.play();
+//audio  
 let audioUp = new Audio(); //up
 audioUp.src = "audio/up.mp3";
 
@@ -30,7 +30,7 @@ audioDead.src = "audio/dead.mp3";
 
 
 //create snake
-let snake = [0]; 
+let snake = []; 
 
 snake[0] = {
     x: 9 * box, 
@@ -50,18 +50,20 @@ let d;
 document.addEventListener("keydown", direction);
 
 function direction(event) { //double conditions to make sure the snake can't turn into itself
-    if (event.keyCode == 37 && d != "RIGHT") {
-        audioLeft.play();
+    let key = event.keyCode;
+
+    if (key == 37 && d != "RIGHT") {
         d = "LEFT";
-    } else if (event.keyCode == 38 && d != "DOWN") {
-        audioUp.play();
+        audioLeft.play();
+    } else if (key == 38 && d != "DOWN") {
         d = "UP";
-    } else if (event.keyCode == 39 && d != "LEFT") {
-        audioRight.play();
+        audioUp.play();
+    } else if (key == 39 && d != "LEFT") {
         d = "RIGHT";
-    } else if (event.keyCode == 40 && d != "UP") {
-        audioDown.play();
+        audioRight.play();
+    } else if (key == 40 && d != "UP") {
         d = "DOWN";
+        audioDown.play();
     }
 }
 
@@ -80,7 +82,7 @@ function collision(head, array) {
 //drawing the canvas
 function draw() {
     //drawing the ground 
-    ctx.drawImage(imgGround, 0, 0); //       <--TODO we're having difficulty rendering here, getting a broken error for the html canvas element
+    ctx.drawImage(imgGround, 0, 0); 
 
     for(let i = 0; i < snake.length; i++) {
         ctx.fillStyle = (i == 0) ? "green" : "white";
@@ -103,7 +105,7 @@ function draw() {
     if (d == "DOWN") snakeY += box;
 
     //snake eating
-    if (snX == food.x && snakeY == food.y) {
+    if (snakeX == food.x && snakeY == food.y) {
         score++;
         audioEat.play();
         food = {
@@ -122,7 +124,7 @@ function draw() {
 
     //game over 
     // left of bounds  right of bounds     top of bounds        bottom of bounds    collision
-    if (snake < box || snakeX > 17 * box || snakeY < 3 * box || snakeY > 17 * box || collision(newHead,snake)) {
+    if (snakeX < box || snakeX > 17 * box || snakeY < 3 * box || snakeY > 17 * box || collision(newHead,snake)) {
         clearInterval(game);
         audioDead.play();
     }
